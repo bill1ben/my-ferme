@@ -1,0 +1,10 @@
+animal:
+  fields:
+    name: "Nom de l'animal"
+    type: "Type d'animal"
+    age: "Âge de l'animal"
+    price_ttc: "Prix TTC"
+    price_ht: "Prix HT"     
+    breed: "Race"            
+    media: "Medias"
+    discription: "Description"

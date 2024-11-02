@@ -1,0 +1,7 @@
+api_platform:
+    title: 'API de Ferme Bétail'
+    description: 'Une API pour gérer la vente de bétail.'
+    version: '1.0.0'
+    mapping:
+        paths:
+            - '%kernel.project_dir%/src/Entity'

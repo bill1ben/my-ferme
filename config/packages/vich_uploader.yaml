@@ -1,0 +1,10 @@
+vich_uploader:
+    db_driver: orm 
+    mappings:
+        animal_media:
+            uri_prefix: '%env(URI_PREFIX_UPLOAD)%'
+            upload_destination: '%kernel.project_dir%/%env(UPLOAD_DESTINATION)%'
+            namer: Vich\UploaderBundle\Naming\SmartUniqueNamer
+            inject_on_load: true
+            delete_on_update: true
+            delete_on_remove: true
