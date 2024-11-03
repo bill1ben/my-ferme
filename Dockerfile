@@ -1,24 +1,18 @@
-FROM node:16 AS node_builder
-
-WORKDIR /app
-
-# Copier le code du projet pour exécuter npm install et npm run build
-COPY . .
-
-# Installer les dépendances npm
-RUN npm install && npm run build
-
 # Choisir une image de base avec PHP 8.1
 FROM php:8.1-cli
 
-# Installer les dépendances nécessaires et Supervisor
+# Installer les dépendances nécessaires, Supervisor et Node.js
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     supervisor \
     libicu-dev \
+    curl \
     && docker-php-ext-install pdo pdo_mysql intl \
-    && docker-php-ext-enable intl
+    && docker-php-ext-enable intl \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm@latest  # Installer la dernière version de npm
 
 # Augmenter la limite de mémoire PHP
 RUN echo "memory_limit = 512M" > /usr/local/etc/php/conf.d/memory-limit.ini
@@ -31,9 +25,12 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 # Définir le dossier de travail
 WORKDIR /app
+RUN git config --global --add safe.directory /app
 
 # Copier le contenu de votre application dans le conteneur
 COPY . .
+
+# Installer les dépendances npm et construire le projet
 
 # Copier le script d'initialisation
 COPY init_db.sh /usr/local/bin/init_db.sh
@@ -47,3 +44,6 @@ EXPOSE 8000
 
 # Lancer Supervisor comme processus principal
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+RUN npm install
+RUN npm run build
